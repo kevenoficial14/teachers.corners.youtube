@@ -1,0 +1,878 @@
+:root {
+    --classroom-dark: #2b3a42;
+    --classroom-medium: #3f5866;
+    --classroom-light: #6e8898;
+    --classroom-accent: #5D5CDE;
+    --classroom-highlight: #7674f3;
+    --classroom-chalk1: #e3e3e3;
+    --classroom-chalk2: #b5e8ff;
+    --classroom-chalk3: #ffdb5c;
+    --classroom-chalk4: #ff947b;
+    --classroom-text: #f4f4f4;
+    --classroom-muted: #ccd7e0;
+    --classroom-card: rgba(43, 58, 66, 0.85);
+    --classroom-card-border: rgba(93, 92, 222, 0.3);
+    --classroom-wall-top: #394b53;
+    --classroom-wall-bottom: #2b3a42;
+    --classroom-floor: #63462d;
+    --classroom-desk: #8c6142;
+    --classroom-desk-dark: #5a3d29;
+    --tv-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    --tv-border: 15px solid #1e1e1e;
+    --tv-screen: rgba(0, 0, 0, 0.92);
+    --tv-glow: 0 0 40px rgba(93, 92, 222, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes glowBlue {
+    0%, 100% { 
+        text-shadow: 0 0 5px rgba(93, 92, 222, 0.5),
+                     0 0 10px rgba(93, 92, 222, 0.3);
+    }
+    50% { 
+        text-shadow: 0 0 10px rgba(93, 92, 222, 0.7),
+                     0 0 20px rgba(93, 92, 222, 0.5),
+                     0 0 30px rgba(93, 92, 222, 0.3);
+    }
+}
+
+@keyframes chalkDust {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes tvStatic {
+    0%, 100% { background-position: 0 0; }
+    10% { background-position: -5% -5%; }
+    20% { background-position: 10% 10%; }
+    30% { background-position: 15% -10%; }
+    40% { background-position: -15% 5%; }
+    50% { background-position: -10% 15%; }
+    60% { background-position: 15% 5%; }
+    70% { background-position: 0% 10%; }
+    80% { background-position: -5% 0%; }
+    90% { background-position: 10% -5%; }
+}
+
+@keyframes tvGlow {
+    0%, 100% { box-shadow: var(--tv-glow); }
+    50% { box-shadow: 0 0 60px rgba(93, 92, 222, 0.4); }
+}
+
+@keyframes channelIn {
+    0% { transform: scale(0.95); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes channelOut {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.05); opacity: 0; }
+}
+
+@keyframes tvTurnOn {
+    0% { 
+        transform: scale(0.8); 
+        opacity: 0; 
+        filter: brightness(0.1);
+    }
+    10% { 
+        transform: scale(1.05); 
+        opacity: 0.6; 
+        filter: brightness(1.5);
+    }
+    12% { 
+        transform: scale(1.03); 
+        opacity: 0.3; 
+        filter: brightness(0.3);
+    }
+    20% { 
+        transform: scale(1.02); 
+        opacity: 0.8; 
+        filter: brightness(1.2);
+    }
+    25% { 
+        transform: scale(1.01); 
+        opacity: 0.6; 
+        filter: brightness(0.9);
+    }
+    100% { 
+        transform: scale(1); 
+        opacity: 1; 
+        filter: brightness(1);
+    }
+}
+
+@keyframes tvLine {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+}
+
+@keyframes lightFlicker {
+    0%, 100% { opacity: 1; }
+    92% { opacity: 1; }
+    93% { opacity: 0.7; }
+    94% { opacity: 1; }
+    96% { opacity: 0.9; }
+    98% { opacity: 1; }
+}
+
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    color: var(--classroom-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    background: linear-gradient(to bottom, var(--classroom-wall-top), var(--classroom-wall-bottom));
+}
+
+/* Classroom Background */
+.classroom-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.classroom-wall {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70%;
+    background: linear-gradient(to bottom, var(--classroom-wall-top), var(--classroom-wall-bottom));
+    border-bottom: 3px solid var(--classroom-medium);
+}
+
+.classroom-floor {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to bottom, var(--classroom-floor), var(--classroom-desk-dark));
+}
+
+.classroom-furniture {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.classroom-desk {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1200px;
+    height: 10%;
+    background: var(--classroom-desk);
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    border-top: 4px solid var(--classroom-desk-dark);
+    z-index: 1;
+}
+
+.classroom-desk::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: var(--classroom-desk-dark);
+    border-radius: 2px;
+}
+
+.classroom-board {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 1000px;
+    height: 25%;
+    background: #143b24;
+    border: 10px solid #8c6142;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(0, 0, 0, 0.3);
+    z-index: 0;
+}
+
+.board-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Poppins', cursive;
+    font-size: clamp(20px, 5vw, 36px);
+    text-align: center;
+    line-height: 1.2;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.board-text {
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+    opacity: 0.9;
+}
+
+.chalk-dust {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
+    animation: chalkDust 3s infinite ease-in-out;
+    z-index: 1;
+}
+
+.classroom-light {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    animation: lightFlicker 10s infinite;
+}
+
+.page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+    position: relative;
+    z-index: 10;
+}
+
+.classroom-header {
+    position: relative;
+    margin-bottom: 40px;
+    text-align: center;
+    animation: floatUp 1.2s ease forwards;
+    backdrop-filter: blur(3px);
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Back arrow styling */
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: var(--classroom-card);
+    color: var(--classroom-highlight);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    border: 2px solid var(--classroom-accent);
+    z-index: 100;
+}
+
+.back-arrow:hover {
+    transform: translateX(-5px);
+    background-color: var(--classroom-medium);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.back-arrow i {
+    font-size: 18px;
+}
+
+.classroom-label {
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--classroom-chalk3);
+    display: inline-block;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--classroom-accent);
+    padding-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.classroom-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(34px, 5vw, 50px);
+    font-weight: 700;
+    color: var(--classroom-text);
+    position: relative;
+    margin-bottom: 15px;
+    letter-spacing: 0.03em;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    animation: glowBlue 3s infinite;
+}
+
+.classroom-subtitle {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--classroom-highlight);
+    font-weight: 600;
+    max-width: 800px;
+    margin: 0 auto 15px;
+    line-height: 1.5;
+    position: relative;
+    padding: 0 20px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.icon-divider {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 15px;
+}
+
+.icon-divider i {
+    color: var(--classroom-accent);
+    font-size: 18px;
+    opacity: 0.8;
+    transform: rotate(0deg);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* TV Container */
+.tv-container {
+    position: relative;
+    margin: 40px auto;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tv-set {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    aspect-ratio: 16 / 9;
+    background: var(--classroom-dark);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: var(--tv-shadow);
+    margin-bottom: 30px;
+    overflow: hidden;
+    animation: tvGlow 4s infinite ease-in-out;
+}
+
+.tv-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--tv-screen);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid rgba(0, 0, 0, 0.6);
+}
+
+.tv-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: var(--tv-border);
+    border-radius: 15px;
+    pointer-events: none;
+    z-index: 1;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.tv-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: rgba(20, 20, 20, 0.9);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tv-channel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    overflow-y: auto;
+    color: var(--classroom-text);
+}
+
+.tv-channel.active {
+    display: block;
+    opacity: 1;
+    animation: channelIn 0.6s ease-out forwards;
+}
+
+.tv-static {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=');
+    opacity: 0.15;
+    background-size: cover;
+    animation: tvStatic 0.5s infinite steps(3);
+    display: none;
+    pointer-events: none;
+}
+
+.tv-scanline {
+    position: absolute;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(255, 255, 255, 0.05) 10%,
+        rgba(255, 255, 255, 0.05) 90%,
+        transparent 100%
+    );
+    animation: tvLine 8s linear infinite;
+    pointer-events: none;
+    opacity: 0.1;
+}
+
+.tv-reflection {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        transparent 20%,
+        transparent 80%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.tv-power-button {
+    position: absolute;
+    bottom: -55px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--classroom-dark);
+    border: 3px solid var(--classroom-card-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--classroom-accent);
+    font-size: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.tv-power-button:hover {
+    transform: scale(1.1);
+    color: var(--classroom-highlight);
+    border-color: var(--classroom-highlight);
+    box-shadow: 0 5px 20px rgba(93, 92, 222, 0.2);
+}
+
+/* Channel Selector */
+.channel-selector {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+    max-width: 900px;
+}
+
+.channel-button {
+    background: var(--classroom-card);
+    border: 1px solid var(--classroom-card-border);
+    color: var(--classroom-muted);
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.channel-button i {
+    font-size: 16px;
+    color: var(--classroom-accent);
+    transition: color 0.3s ease;
+}
+
+.channel-button:hover {
+    background: rgba(63, 88, 102, 0.9);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.channel-button:hover i {
+    color: var(--classroom-highlight);
+}
+
+.channel-button.active {
+    background: rgba(93, 92, 222, 0.3);
+    color: var(--classroom-text);
+    border-color: var(--classroom-accent);
+    box-shadow: 0 5px 15px rgba(93, 92, 222, 0.2);
+}
+
+.channel-button.active i {
+    color: var(--classroom-highlight);
+}
+
+/* Channel Content */
+.channel-header {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(24px, 4vw, 32px);
+    color: var(--classroom-highlight);
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid var(--classroom-accent);
+    padding-bottom: 10px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.channel-icon {
+    color: var(--classroom-accent);
+    margin-right: 10px;
+    font-size: 90%;
+}
+
+.channel-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 10px;
+}
+
+.youtube-channel {
+    display: flex;
+    flex-direction: column;
+    background: rgba(43, 58, 66, 0.7);
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid rgba(93, 92, 222, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.youtube-channel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border-color: var(--classroom-accent);
+    background: rgba(63, 88, 102, 0.8);
+}
+
+.channel-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--classroom-text);
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.channel-name i {
+    color: #FF0000;
+    font-size: 24px;
+}
+
+.channel-description {
+    font-size: 16px;
+    color: var(--classroom-muted);
+    line-height: 1.6;
+}
+
+.youtube-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    color: rgba(255, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.youtube-channel:hover .youtube-icon {
+    transform: scale(1.2);
+    color: rgba(255, 0, 0, 0.8);
+}
+
+.channel-rows {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to top, rgba(43, 58, 66, 0.8), transparent);
+    pointer-events: none;
+}
+
+.tv-off {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: rgba(255, 255, 255, 0.3);
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+}
+
+.tv-turned-off .tv-channel {
+    display: none;
+}
+
+.tv-instructions {
+    text-align: center;
+    font-size: 16px;
+    color: var(--classroom-muted);
+    max-width: 600px;
+    margin: 20px auto;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+}
+
+.tv-logo {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: rgba(255, 255, 255, 0.2);
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    z-index: 5;
+}
+
+.tv-logo i {
+    font-size: 16px;
+}
+
+.classroom-footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    color: var(--classroom-muted);
+    position: relative;
+    margin-top: 40px;
+    animation: floatUp 2s ease forwards;
+    opacity: 0;
+    animation-delay: 1s;
+    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.classroom-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--classroom-accent), transparent);
+}
+
+.copyright {
+    font-size: 16px;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.copyright-year {
+    color: var(--classroom-accent);
+    font-weight: 600;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(43, 58, 66, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--classroom-medium);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--classroom-accent);
+}
+
+/* Visual improvements */
+.youtube-channel {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(93, 92, 222, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.youtube-channel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--classroom-accent), var(--classroom-highlight));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.youtube-channel:hover::before {
+    opacity: 1;
+}
+
+.channel-category-title {
+    display: block;
+    font-size: 14px;
+    color: var(--classroom-accent);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.channel-visit {
+    margin-top: 15px;
+    display: inline-block;
+    padding: 5px 10px;
+    background: rgba(93, 92, 222, 0.2);
+    border-radius: 5px;
+    color: var(--classroom-chalk1);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.channel-visit:hover {
+    background: rgba(93, 92, 222, 0.4);
+    transform: translateY(-2px);
+}
+
+.channel-visit i {
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+.subject-emoji {
+    font-size: 24px;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .page-container {
+        padding: 20px 15px 40px;
+    }
+    
+    .classroom-header {
+        margin-bottom: 30px;
+        padding: 15px;
+    }
+    
+    .classroom-title {
+        font-size: 30px;
+    }
+    
+    .classroom-subtitle {
+        font-size: 16px;
+        padding: 0 10px;
+    }
+    
+    .channel-selector {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .channel-button {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    .classroom-board {
+        height: 20%;
+    }
+    
+    .tv-power-button {
+        bottom: -40px;
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .channel-rows {
+        grid-template-columns: 1fr;
+    }
+    
+    .back-arrow {
+        top: 10px;
+        left: 10px;
+        width: 36px;
+        height: 36px;
+    }
+}
